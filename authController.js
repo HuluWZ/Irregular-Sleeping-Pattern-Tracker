@@ -10,9 +10,9 @@ var  _ = require('lodash');
 const crypto= require('crypto');
 const { min } = require('moment');
 const sgMail = require('@sendgrid/mail');
+
 require('dotenv').config();
 
-//require('./authSocialController');
 // TIME DURATION 
 var moment = require("moment");
 var momentDurationFormatSetup = require("moment-duration-format");
