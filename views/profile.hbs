@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    .navbar-wrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .navbar-wrapper ul {
+      margin: 0;
+    }
+
+    .chart-container {
+      height: 500px !important;
+
+    }
+  </style>
+  <title>Show Chart</title>
+</head>
+
+<body>
+  <form action="/api/user/logout" method="GET">
+    <button type="submit" class="btn btn-sm btn-outline-secondary">Logout</button><br>
+  </form>
+  <div class="row">
+    <main class="col-md-10 ms-sm-auto col-lg-12 px-md-4">
+      <div class="chartjs-size-monitor">
+        <div class="chartjs-size-monitor-expand">
+          <div class=""></div>
+        </div>
+        <div class="chartjs-size-monitor-shrink">
+          <div class=""></div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-5">
+          <button class="btn justify-content-center new-entry-brn"><a class="add-btn" href="/addEntry">+Add
+              Entry</a></button>
+        </div>
+
+        <div class="col-2">
+          <button class="btn justify-content-center update-data-btn"><a class="update-btn" href="/updateEntry">Update
+              Entry</a></button>
+
+        </div>
+        <div class="col-5">
+          <button class="btn justify-content-center clear-data-btn"><a class="delete-btn" href="/deleteEntry">Delete
+              Entry</a></button>
+        </div>
+      </div>
+
+
+  </div>
+  {{!-- this is the chart part --}}
+  <div class="chart-container justify-center " style="position: relative; height:40vh; width:80vw">
+    <canvas id="chart" width="600" height="250"></canvas>
+  </div>
+  <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+    <canvas id="chart"></canvas>
+  </div>
+  <script>
+    (async function drawChart() {
+
+      console.log("Hello From fetch");
+      // await getData();
+      const { data: entries } = await fetch("http://localhost:3000/api/user/sleep").then(resp => resp.json()).catch(err => console.error(err));
+      console.log(entries)
+      const labels = entries.map(entry => {
+        const d = new Date(entry.sleepTime);
+        return d.toLocaleDateString('en-us');
+      });
+
+      const durations = entries.map(entry => {
+        const dur = entry.duration.split(':');
+        return parseFloat(dur[0] + "." + dur[1]);
+      });
+
+      // / Average Sleep Duration
+      const average = arr => arr.reduce((p, c) => p + c, 0) / arr.length;
+
+      var result = average(durations); // 
+
+      var avgDuration = Math.round(result);
+      console.log("Average Duration: " + avgDuration);
+      //Number of days the user slept less than 6 hours
+      var lessThanSix = durations.filter(dur => dur < 5);
+      lessThanSix = lessThanSix.length;
+      //Number of days the user slept more than 8 hours
+      var greaterThanSix = durations.filter(dur => dur > 8);
+      greaterThanSix = greaterThanSix.length;
+
+      console.log("Duration Less than 6 = " + lessThanSix + " \n  Duration Greater Than 8 = " + greaterThanSix);
+
+      /*
+      const avgDuration = entries.map(entry => {
+        const durn = entry.duration.split(':');
+        return
+      })
+      */
+      //parseInt(entry.duration.split(':')[0] + "." + entry.duration.split(":")[1]));
+      console.log(labels, durations);
+      //<p>Average Sleep Duration:</p>
+      const ctx = document.getElementById('chart');
+      // const ctx2 = document.getElementById('chart2');
+
+      const myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'User Sleep Duration And Date',
+            data: durations,
+            backgroundColor:
+              'rgba(208, 44, 153, 1)'
+            ,
+            borderColor:
+              'rgba(68, 207, 95, 1)'
+            ,
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          },
+          layout: {
+            padding: 50,
+            margin: 930
+          }, legend: {
+            display: false
+          }, responsive: true,
+          maintainAspectRatio: true
+        }
+      });
+    })();
+
+  </script>
+
+  {{!-- <canvas class="my-4 w-50 chartjs-render-monitor" id="myChart"></canvas> --}}
+</body>
+</div>
+</main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

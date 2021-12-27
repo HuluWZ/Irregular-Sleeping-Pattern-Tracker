@@ -1,0 +1,24 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #eee;
+  color: #111;
+}
+h1 {
+  text-align: center;
+  margin: 1.25rem 0 0.25rem 0;
+}
+.chart-container {
+  position: relative;
+  width: 45vw;
+  height: 22.5vh;
+  margin: auto;
+}
+
+/*canvas {
+  border: 3px solid blue;
+}*/

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style.css">
+    <title>Add Entry</title>
+</head>
+
+<body>
+    <div class="container lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form action="/api/user/addEntry" method="POST">
+                    <div class="mb-3">
+                        <label for="sleepTime" class="form-label">Sleep Time</label>
+                        <input type="datetime-local" class="form-control" id="sleepTime" name="sleepTime" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="wakeupTime" class="form-label">WakeUp Time <Address></Address></label>
+                        <input type="datetime-local" class="form-control" id="wakeupTime" name="wakeupTime" required>
+                    </div>
+                    <button type="submit" class="btn add-entry-btn">Add Entry</button>
+                </form>
+            </div>
+        </div>
+        {{#if message }}
+        <h4 class="alert alert-danger mt-4">{{message}}</h4>
+        {{/if}}
+    </div>
+    <script>
+
+        document.querySelector("#submitRecord").addEventListener('click', (event) => {
+            event.preventDefault();
+            const formdata = new FormData();
+            formdata.append('sleepTime', document.querySelector("#sleepTime").value);
+            formdata.append('wakeupTime', document.querySelector("#wakeupTime").value)
+            fetch('/api/user/addEntry', {
+                method: "POST",
+                body: formdata,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(resp => {
+                console.log(resp)
+            }).catch(err => console.log(err))
+        })
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
