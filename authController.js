@@ -9,6 +9,9 @@ const connection = require('./dbConn');
 var  _ = require('lodash');
 const crypto= require('crypto');
 const { min } = require('moment');
+const sgMail = require('@sendgrid/mail');
+require('dotenv').config();
+
 //require('./authSocialController');
 // TIME DURATION 
 var moment = require("moment");
@@ -293,14 +296,28 @@ exports.forgotPassword = catchAsync(async  function(req, res, next) {
     res.redirect(resetURL)
       // SEND MAIL TO USER Try Version
     
-    /*  
+    /*
      await sendEmail({
       email: email,
       subject: 'Account Activation Link (valid for 20 min)',
       message
 
-    });*/  
-  }  catch (err) {
+    });*/
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    
+const msg = {
+   to: email,
+   from: 'hulunlante.w@gmail.com', // Use the email address or domain you verified above
+   subject: 'Account Activation Link (valid for 20 min)', // Subject of  A Mail
+   text: message // The  text to be sent
+};
+
+    sgMail.send(msg)
+      .then(() => {
+           console.log('Email sent Successfully ✌️')
+           });
+    
+  }catch (err) {
       console.log(err)
     const sql = "update  users set passwordResetToken = NULL , passwordResetExpires = NULL where email = ?";
     //const sql = "insert into users (passwordResetToken,passwordResetExpires)  select passwordResetToken,passwordResetExpires from users where email= ?";
